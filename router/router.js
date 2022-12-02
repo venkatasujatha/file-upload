@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const server = require("../server");
-const FileController = require("../controller/fileController");
+const fileController = require("../controller/fileController");
 
 const multer = require("multer");
 var multer1 = multer();
@@ -16,13 +16,14 @@ var storage = multer.diskStorage({
     },
   })
   const uploadFile = multer({ storage: storage,limits: { fileSize: 1000000 }, fileFilter: (req, file, cb) => {
-    if (file.mimetype == "image/tiff" ) {
-      
+    if (file.mimetype == "image/tiff"||file.mimetype=="image/png" ) {
+
       cb(null, true);
     } else {
       cb(null, false);
-      return cb(new Error('Only .tiff format allowed!'));
+      return cb(new Error('Only .tiff and .png format allowed!'));
     }
   }});
-  router.post('/readFileContent1',uploadFile.single('path'),FileController.readFile);
+  router.post('/readFileContent1',uploadFile.single('path'),fileController.readFile);
+  router.post('/readFileContent2',fileController.pngToBlob);
   module.exports = router;
